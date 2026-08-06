@@ -189,8 +189,11 @@ Leave the SMTP block empty to keep messages in the admin inbox only.
 
 ## Deploying to Render
 
-A [`render.yaml`](render.yaml) blueprint is included. In the Render dashboard:
-**New + → Blueprint → pick this repo → Apply**, then set `ADMIN_PASSWORD` before the first deploy.
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Sivapandi369/portfolio)
+
+A [`render.yaml`](render.yaml) blueprint is included, so deployment is one click on the button above
+(or in the dashboard: **New + → Blueprint → pick this repo → Apply**). Set `ADMIN_PASSWORD` when
+Render prompts for it, then **Apply** — the first build takes 2–4 minutes.
 
 If you deploy with `NODE_ENV=production` and **no** `ADMIN_PASSWORD`, the app refuses to fall back
 to the publicly documented `Admin@123`; it generates a random password and prints it **once** in the
