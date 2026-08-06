@@ -1,5 +1,4 @@
 node_modules/
-.env
 data/
 public/uploads/*
 !public/uploads/.gitkeep
@@ -7,3 +6,10 @@ public/uploads/*
 npm-debug.log*
 .DS_Store
 Thumbs.db
+
+# Vercel CLI
+.vercel
+
+# Local secrets — but keep the documented template
+.env*
+!.env.example
