@@ -1,0 +1,85 @@
+# ----------------------------------------------------------------
+# Render Blueprint — https://render.com/docs/blueprint-spec
+#
+# Deploy: Render Dashboard -> New + -> Blueprint -> pick this repo.
+#
+# IMPORTANT — persistence:
+#   Render's filesystem is ephemeral. Without a mounted disk, every
+#   deploy and every restart resets data/db.json, so all admin edits
+#   and contact messages are lost.
+#
+#   The `disk:` block below fixes that, but disks require a paid
+#   instance type (starter or above) — they are NOT available on the
+#   free plan. Two supported setups:
+#
+#   A) PAID / persistent (recommended, as configured below)
+#      plan: starter  +  the disk block  +  DATA_DIR / UPLOAD_DIR
+#      -> edits and messages survive deploys and restarts.
+#
+#   B) FREE / demo only
+#      set `plan: free` and DELETE the `disk:` block and the
+#      DATA_DIR / UPLOAD_DIR env vars.
+#      -> the site always renders correctly, but it reverts to the
+#         seeded content on restart and messages are not kept.
+# ----------------------------------------------------------------
+
+services:
+  - type: web
+    name: sivapandi-portfolio
+    runtime: node
+    plan: starter
+    region: singapore          # closest to India; also: oregon, frankfurt, ohio, virginia
+    branch: main
+    buildCommand: npm ci --omit=dev
+    startCommand: npm start
+    healthCheckPath: /api/health
+    autoDeploy: true
+
+    disk:
+      name: portfolio-data
+      mountPath: /var/data
+      sizeGB: 1
+
+    envVars:
+      - key: NODE_ENV
+        value: production
+
+      # Persistent storage (must sit under the disk mountPath above)
+      - key: DATA_DIR
+        value: /var/data/db
+      - key: UPLOAD_DIR
+        value: /var/data/uploads
+
+      # Session signing key — Render generates a strong random value
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 12h
+
+      # First-run admin account. Set ADMIN_PASSWORD in the Render
+      # dashboard BEFORE the first deploy; it is only read once, when
+      # the database is created. Change it later in Admin -> Account.
+      - key: ADMIN_USERNAME
+        value: admin
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: ADMIN_EMAIL
+        value: sivapandi622004@gmail.com
+
+      # Optional: forward contact-form messages to your inbox.
+      # Fill these in the dashboard, or leave them unset to keep
+      # messages in the admin panel only.
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        value: "587"
+      - key: SMTP_SECURE
+        value: "false"
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: SMTP_FROM
+        sync: false
+      - key: CONTACT_TO
+        sync: false

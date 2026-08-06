@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sivapandi R | Software Developer & Web Developer Portfolio</title>
+    <meta name="description" content="Portfolio of Sivapandi R - Software Developer, Web Development Intern, and ECE Graduate proficient in React.js, JavaScript, Python, HTML/CSS, MongoDB, and MySQL.">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- html2pdf for direct PDF resume downloading -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+    <!-- Top Scroll Progress Bar -->
+    <div id="scroll-progress" class="scroll-progress"></div>
+
+    <!-- Navigation Bar -->
+    <header class="navbar" id="navbar">
+        <div class="container nav-container">
+            <a href="#hero" class="nav-logo">
+                <!-- <span class="logo-badge">S</span> -->
+                <span class="logo-text" id="logo-text">Sivapandi<span class="dot">.R</span></span>
+            </a>
+
+            <nav class="nav-menu" id="nav-menu">
+                <ul class="nav-list" id="nav-list">
+                    <li><a href="#about" class="nav-link">About</a></li>
+                    <li><a href="#skills" class="nav-link">Skills</a></li>
+                    <li><a href="#experience" class="nav-link">Experience</a></li>
+                    <li><a href="#projects" class="nav-link">Projects</a></li>
+                    <li><a href="#education" class="nav-link">Education</a></li>
+                    <li><a href="#contact" class="nav-link">Contact</a></li>
+                </ul>
+            </nav>
+
+            <div class="nav-actions">
+                <button class="theme-toggle" id="theme-toggle" aria-label="Toggle Theme" title="Toggle Dark/Light Mode">
+                    <i class="fa-solid fa-moon icon-moon"></i>
+                    <i class="fa-solid fa-sun icon-sun"></i>
+                </button>
+                <button class="btn btn-primary btn-sm btn-resume" id="download-resume-btn">
+                    <i class="fa-solid fa-file-arrow-down"></i>
+                    <span>Resume PDF</span>
+                </button>
+                <button class="mobile-toggle" id="mobile-toggle" aria-label="Toggle Navigation Menu">
+                    <i class="fa-solid fa-bars icon-bars"></i>
+                    <i class="fa-solid fa-xmark icon-close"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="hero" class="hero-section">
+            <div class="container hero-container">
+                <div class="hero-content reveal-left">
+                    <div class="status-badge" id="hero-status-badge">
+                        <span class="status-dot pulse"></span>
+                        Available for Software Developer Roles
+                    </div>
+                    <h1 class="hero-title" id="hero-title">
+                        Hi, I'm <span class="gradient-text">Sivapandi R</span>
+                    </h1>
+                    <h2 class="hero-subtitle" id="hero-subtitle">Aspiring Software Developer & Web Specialist</h2>
+                    <p class="hero-description" id="hero-description">
+                        Motivated ECE graduate passionate about crafting efficient, responsive web applications and scalable software solutions with modern technologies like React.js, JavaScript, Python, and SQL databases.
+                    </p>
+
+                    <div class="hero-actions" id="hero-actions">
+                        <a href="#projects" class="btn btn-primary">
+                            <i class="fa-solid fa-briefcase"></i> View Projects
+                        </a>
+                        <a href="#contact" class="btn btn-outline">
+                            <i class="fa-solid fa-paper-plane"></i> Contact Me
+                        </a>
+                        <button class="btn btn-secondary btn-download-zip" id="download-zip-btn">
+                            <i class="fa-solid fa-file-zipper"></i> Source Code (.ZIP)
+                        </button>
+                    </div>
+
+                    <div class="hero-contact-strip" id="hero-contact-strip">
+                        <div class="contact-pill">
+                            <i class="fa-solid fa-location-dot"></i> Theni - 625531
+                        </div>
+                        <div class="contact-pill copyable" data-copy="9360833565">
+                            <i class="fa-solid fa-phone"></i> +91 9360833565
+                            <i class="fa-regular fa-copy copy-icon"></i>
+                        </div>
+                        <div class="contact-pill copyable" data-copy="sivapandi622004@gmail.com">
+                            <i class="fa-solid fa-envelope"></i> sivapandi622004@gmail.com
+                            <i class="fa-regular fa-copy copy-icon"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hero-visual reveal-right">
+                    <div class="avatar-card" id="avatar-card">
+                        <div class="avatar-glow"></div>
+                        <div class="avatar-inner">
+                            <div class="avatar-icon">
+                                <i class="fa-solid fa-code"></i>
+                            </div>
+                            <div class="avatar-details">
+                                <span class="avatar-name">Sivapandi R</span>
+                                <span class="avatar-role">Software Developer Fresher</span>
+                            </div>
+                        </div>
+                        <div class="floating-badge badge-1">
+                            <i class="fa-brands fa-react react-spin"></i>
+                            <span>React.js Specialist</span>
+                        </div>
+                        <div class="floating-badge badge-2">
+                            <i class="fa-solid fa-graduation-cap"></i>
+                            <span>BE ECE (2025)</span>
+                        </div>
+                        <div class="floating-badge badge-3">
+                            <i class="fa-solid fa-certificate"></i>
+                            <span>Corizo Certified</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="section about-section">
+            <div class="container">
+                <div class="section-header reveal">
+                    <span class="section-tag" data-bind="about.tag">Overview</span>
+                    <h2 class="section-title" data-bind="about.title">Career Objective & Bio</h2>
+                    <div class="section-divider"></div>
+                </div>
+
+                <div class="about-grid" id="about-grid">
+                    <div class="about-card reveal">
+                        <div class="card-icon"><i class="fa-solid fa-bullseye"></i></div>
+                        <h3>Career Objective</h3>
+                        <p>
+                            Motivated and enthusiastic fresher seeking an opportunity as a Software Developer where I can apply programming knowledge and web development skills to build efficient, scalable, and user-centric software solutions.
+                        </p>
+                    </div>
+
+                    <div class="about-card reveal" style="animation-delay: 0.15s;">
+                        <div class="card-icon"><i class="fa-solid fa-laptop-code"></i></div>
+                        <h3>Technical Foundation</h3>
+                        <p>
+                            Solid foundation in Electronics & Communication Engineering paired with hands-on web development experience in HTML5, CSS3, JavaScript, React.js, Python, C, MongoDB, and MySQL.
+                        </p>
+                    </div>
+
+                    <div class="about-card reveal" style="animation-delay: 0.3s;">
+                        <div class="card-icon"><i class="fa-solid fa-rocket"></i></div>
+                        <h3>Key Strengths</h3>
+                        <p>
+                            Strong problem-solving mindset, eager learner of modern web stack frameworks, proven internship track record, and passionate about clean code, UI design, and team collaboration.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Technical Skills Section -->
+        <section id="skills" class="section skills-section">
+            <div class="container">
+                <div class="section-header reveal">
+                    <span class="section-tag" data-bind="skills.tag">Expertise</span>
+                    <h2 class="section-title" data-bind="skills.title">Technical Skills</h2>
+                    <div class="section-divider"></div>
+                </div>
+
+                <div class="skills-wrapper" id="skills-wrapper">
+                    <!-- Programming Languages -->
+                    <div class="skill-category-card reveal">
+                        <div class="category-header">
+                            <i class="fa-solid fa-code"></i>
+                            <h3>Programming Languages</h3>
+                        </div>
+                        <div class="skill-bars">
+                            <div class="skill-item">
+                                <div class="skill-info">
+                                    <span>Python</span>
+                                    <span>90%</span>
+                                </div>
+                                <div class="progress-track"><div class="progress-fill" style="width: 80%;"></div></div>
+                            </div>
+                            <div class="skill-item">
+                                <div class="skill-info">
+                                    <span>C Programming</span>
+                                    <span>80%</span>
+                                </div>
+                                <div class="progress-track"><div class="progress-fill" style="width: 75%;"></div></div>
+                            </div>
+                            <div class="skill-item">
+                                <div class="skill-info">
+                                    <span>Java (Basics)</span>
+                                    <span>70%</span>
+                                </div>
+                                <div class="progress-track"><div class="progress-fill" style="width: 65%;"></div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Web Technologies -->
+                    <div class="skill-category-card reveal" style="animation-delay: 0.15s;">
+                        <div class="category-header">
+                            <i class="fa-solid fa-globe"></i>
+                            <h3>Web Technologies</h3>
+                        </div>
+                        <div class="skill-bars">
+                            <div class="skill-item">
+                                <div class="skill-info">
+                                    <span>HTML5 & CSS3</span>
+                                    <span>95%</span>
+                                </div>
+                                <div class="progress-track"><div class="progress-fill" style="width: 90%;"></div></div>
+                            </div>
+                            <div class="skill-item">
+                                <div class="skill-info">
+                                    <span>JavaScript (ES6+)</span>
+                                    <span>95%</span>
+                                </div>
+                                <div class="progress-track"><div class="progress-fill" style="width: 85%;"></div></div>
+                            </div>
+                            <div class="skill-item">
+                                <div class="skill-info">
+                                    <span>React.js</span>
+                                    <span>95%</span>
+                                </div>
+                                <div class="progress-track"><div class="progress-fill" style="width: 80%;"></div></div>
+                            </div>
+                            <div class="skill-item">
+                                <div class="skill-info">
+                                    <span>MongoDB & MySQL</span>
+                                    <span>95%</span>
+                                </div>
+                                <div class="progress-track"><div class="progress-fill" style="width: 75%;"></div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tools & Platforms -->
+                    <div class="skill-category-card reveal" style="animation-delay: 0.3s;">
+                        <div class="category-header">
+                            <i class="fa-solid fa-screwdriver-wrench"></i>
+                            <h3>Tools & Ecosystem</h3>
+                        </div>
+                        <div class="tools-grid">
+                            <div class="tool-badge"><i class="fa-brands fa-git-alt"></i> Git</div>
+                            <div class="tool-badge"><i class="fa-brands fa-github"></i> GitHub</div>
+                            <div class="tool-badge"><i class="fa-solid fa-code"></i> VS Code</div>
+                            <div class="tool-badge"><i class="fa-solid fa-database"></i> MySQL Workbench</div>
+                            <div class="tool-badge"><i class="fa-brands fa-npm"></i> NPM</div>
+                            <div class="tool-badge"><i class="fa-solid fa-microchip"></i> IoT Fundamentals</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Internship Experience Section -->
+        <section id="experience" class="section experience-section">
+            <div class="container">
+                <div class="section-header reveal">
+                    <span class="section-tag" data-bind="experience.tag">Work History</span>
+                    <h2 class="section-title" data-bind="experience.title">Internship Experience</h2>
+                    <div class="section-divider"></div>
+                </div>
+
+                <div class="timeline" id="experience-timeline">
+                    <div class="timeline-item reveal">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-header">
+                                <div>
+                                    <h3 class="role-title">Juior Software Developer </h3>
+                                    <h4 class="company-name"><i class="fa-solid fa-building"></i> Cadd Technologies</h4>
+                                </div>
+                                <span class="timeline-badge"><i class="fa-regular fa-calendar-days"></i> May 2026 – Jul 2026</span>
+                            </div>
+                            <ul class="timeline-details">
+                                <li>Worked on real-time software projects, contributing to both front-end and back-end modules.</li>
+                                <li>Collaborated with senior developers to design and implement features using React.js and MySQL.</li>
+                                <li>Improved overall UI aesthetics and enhanced user experience through modern design principles.</li>
+                                <li>Collaborated on front-end modular components and optimized code structure.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- 2nd intern -->
+                    <div class="timeline-item reveal">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-header">
+                                <div>
+                                    <h3 class="role-title">Web Development Intern</h3>
+                                    <h4 class="company-name"><i class="fa-solid fa-building"></i> Corizo Corporation</h4>
+                                </div>
+                                <span class="timeline-badge"><i class="fa-regular fa-calendar-days"></i> Feb 2024 – Mar 2024</span>
+                            </div>
+                            <ul class="timeline-details">
+                                <li>Worked on real-world web development tasks using HTML, CSS, and JavaScript.</li>
+                                <li>Built responsive, mobile-first web pages ensuring cross-browser compatibility.</li>
+                                <li>Learned frontend development workflow and debugging techniques.</li>
+                                <li>Collaborated on front-end modular components and optimized code structure.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Projects Section -->
+        <section id="projects" class="section projects-section">
+            <div class="container">
+                <div class="section-header reveal">
+                    <span class="section-tag" data-bind="projects.tag">Portfolio</span>
+                    <h2 class="section-title" data-bind="projects.title">Featured Projects</h2>
+                    <div class="section-divider"></div>
+                </div>
+
+                <div class="projects-grid" id="projects-grid">
+                    <!-- Project 1 -->
+                    <div class="project-card reveal">
+                        <div class="project-preview preview-portfolio">
+                            <div class="preview-overlay">
+                                <button class="btn btn-light btn-sm open-modal" data-modal="modal-portfolio">
+                                    <i class="fa-solid fa-eye"></i> View Details
+                                </button>
+                            </div>
+                            <div class="project-banner-icon">
+                                <i class="fa-solid fa-user-gear"></i>
+                            </div>
+                        </div>
+                        <div class="project-body">
+                            <div class="project-tags">
+                                <span class="tag">HTML5</span>
+                                <span class="tag">CSS3</span>
+                                <span class="tag">JavaScript</span>
+                            </div>
+                            <h3 class="project-title">Personal Portfolio Website</h3>
+                            <p class="project-desc">
+                                Developed a responsive personal portfolio website showcasing projects, technical skills, interactive themes, and scroll animations. Designed a sleek modern UI to present profile details seamlessly.
+                            </p>
+                            <div class="project-footer">
+                                <button class="btn btn-outline btn-sm open-modal" data-modal="modal-portfolio">
+                                    <i class="fa-solid fa-circle-info"></i> Project Details
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Project 2 -->
+                    <div class="project-card reveal" style="animation-delay: 0.2s;">
+                        <div class="project-preview preview-sms">
+                            <div class="preview-overlay">
+                                <button class="btn btn-light btn-sm open-modal" data-modal="modal-sms">
+                                    <i class="fa-solid fa-eye"></i> View Details
+                                </button>
+                            </div>
+                            <div class="project-banner-icon">
+                                <i class="fa-solid fa-users-rectangle"></i>
+                            </div>
+                        </div>
+                        <div class="project-body">
+                            <div class="project-tags">
+                                <span class="tag">JavaScript / React</span>
+                                <span class="tag">Database</span>
+                                <span class="tag">CRUD System</span>
+                            </div>
+                            <h3 class="project-title">Student Management System</h3>
+                            <p class="project-desc">
+                                Built an intuitive software system to manage student records efficiently. Features full CRUD (Create, Read, Update, Delete) functionality with real-time data input, validation, and search capability.
+                            </p>
+                            <div class="project-footer">
+                                <button class="btn btn-outline btn-sm open-modal" data-modal="modal-sms">
+                                    <i class="fa-solid fa-circle-info"></i> Project Details
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Education & Certifications Section -->
+        <section id="education" class="section education-section">
+            <div class="container">
+                <div class="section-header reveal">
+                    <span class="section-tag" data-bind="education.tag">Academics</span>
+                    <h2 class="section-title" data-bind="education.title">Education & Certifications</h2>
+                    <div class="section-divider"></div>
+                </div>
+
+                <div class="academics-grid" id="academics-grid">
+                    <!-- Education Cards -->
+                    <div class="academic-column reveal">
+                        <h3 class="column-title"><i class="fa-solid fa-graduation-cap"></i> Education</h3>
+                        
+                        <div class="academic-card highlight-card">
+                            <span class="card-year">2021 – 2025</span>
+                            <h4>BE - Electronics & Communication Engineering</h4>
+                            <p class="institution">Sethu Institute of Technology</p>
+                            <div class="grade-badge"><i class="fa-solid fa-award"></i> CGPA: 7.3 / 10</div>
+                        </div>
+
+                        <div class="academic-card">
+                            <span class="card-year">2021</span>
+                            <h4>Higher Secondary Certificate (HSC)</h4>
+                            <p class="institution">Muthalamman Hindu Higher Secondary School</p>
+                            <div class="grade-badge"><i class="fa-solid fa-percent"></i> Percentage: 80%</div>
+                        </div>
+
+                        <div class="academic-card">
+                            <span class="card-year">2019</span>
+                            <h4>Secondary School Leaving Certificate (SSLC)</h4>
+                            <p class="institution">Muthalamman Hindu Higher Secondary School</p>
+                            <div class="grade-badge"><i class="fa-solid fa-percent"></i> Percentage: 80%</div>
+                        </div>
+                    </div>
+
+                    <!-- Certifications & Languages -->
+                    <div class="academic-column reveal" style="animation-delay: 0.2s;">
+                        <h3 class="column-title"><i class="fa-solid fa-certificate"></i> Certifications</h3>
+                        
+                        <div class="cert-card">
+                            <div class="cert-icon"><i class="fa-solid fa-laptop-code"></i></div>
+                            <div>
+                                <h4>Junior Software Developer</h4>
+                                <p>Cadd Technologies</p>
+                            </div>
+                        </div>
+
+                        <div class="cert-card">
+                            <div class="cert-icon"><i class="fa-solid fa-network-wired"></i></div>
+                            <div>
+                                <h4>Web Development Certification</h4>
+                                <p>Corizo Corporation (2024)</p>
+                            </div>
+                        </div>
+
+                        <div class="cert-card">
+                            <div class="cert-icon"><i class="fa-solid fa-network-wired"></i></div>
+                            <div>
+                                <h4>NPTEL Certification</h4>
+                                <p>Introduction to Industrial IoT 4.0</p>
+                            </div>
+                        </div>
+
+                        <h3 class="column-title mt-4"><i class="fa-solid fa-language"></i> Languages</h3>
+                        <div class="languages-flex">
+                            <div class="lang-pill"><i class="fa-solid fa-check-double"></i> English (Professional)</div>
+                            <div class="lang-pill"><i class="fa-solid fa-check-double"></i> Tamil (Native)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="section contact-section">
+            <div class="container">
+                <div class="section-header reveal">
+                    <span class="section-tag" data-bind="contact.tag">Get In Touch</span>
+                    <h2 class="section-title" data-bind="contact.title">Contact Sivapandi</h2>
+                    <div class="section-divider"></div>
+                </div>
+
+                <div class="contact-wrapper">
+                    <div class="contact-info-card reveal" id="contact-info-card">
+                        <h3>Let's Connect & Work Together!</h3>
+                        <p>I am actively seeking entry-level Software Developer opportunities. Feel free to contact me directly via email or phone.</p>
+                        
+                        <div class="info-list">
+                            <div class="info-item copyable" data-copy="sivapandi622004@gmail.com">
+                                <div class="info-icon"><i class="fa-solid fa-envelope"></i></div>
+                                <div>
+                                    <span class="info-label">Email Address</span>
+                                    <span class="info-val">sivapandi622004@gmail.com</span>
+                                </div>
+                                <i class="fa-regular fa-copy info-copy-icon"></i>
+                            </div>
+
+                            <div class="info-item copyable" data-copy="9360833565">
+                                <div class="info-icon"><i class="fa-solid fa-phone"></i></div>
+                                <div>
+                                    <span class="info-label">Phone / WhatsApp</span>
+                                    <span class="info-val">+91 9360833565</span>
+                                </div>
+                                <i class="fa-regular fa-copy info-copy-icon"></i>
+                            </div>
+
+                            <div class="info-item">
+                                <div class="info-icon"><i class="fa-solid fa-location-dot"></i></div>
+                                <div>
+                                    <span class="info-label">Location</span>
+                                    <span class="info-val">Theni - 625531, Tamil Nadu, India</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="contact-form-card reveal" style="animation-delay: 0.2s;">
+                        <form id="contact-form" onsubmit="handleFormSubmit(event)">
+                            <div class="form-group">
+                                <label for="name">Your Name</label>
+                                <input type="text" id="name" required placeholder="John Doe">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Your Email</label>
+                                <input type="email" id="email" required placeholder="john@example.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="subject">Subject</label>
+                                <input type="text" id="subject" required placeholder="Job Opportunity / Project Request">
+                            </div>
+                            <div class="form-group">
+                                <label for="message">Message</label>
+                                <textarea id="message" rows="4" required placeholder="Hello Sivapandi, I would like to discuss..."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">
+                                <i class="fa-solid fa-paper-plane"></i> Send Message
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-container">
+            <p>&copy; <span id="year"></span> <span id="footer-owner">Sivapandi R. All rights reserved.</span></p>
+            <p class="footer-subtext" id="footer-subtext">Built with HTML5, CSS3, JavaScript, and Love.</p>
+            <button class="back-to-top" id="back-to-top" aria-label="Back to Top">
+                <i class="fa-solid fa-arrow-up"></i>
+            </button>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <!-- Hidden Printable Resume Container for PDF Export -->
+    <div id="printable-resume" class="printable-resume">
+        <div class="resume-pdf-header">
+            <h1>SIVAPANDI R</h1>
+            <p class="resume-contact">Theni - 625531 | Mobile: +91 9360833565 | Email: sivapandi622004@gmail.com</p>
+        </div>
+        
+        <div class="resume-section-pdf">
+            <h2>Career Objective</h2>
+            <p>Motivated and enthusiastic fresher seeking an opportunity as a Software Developer where I can apply programming knowledge and web development skills to build efficient and scalable software solutions.</p>
+        </div>
+
+        <div class="resume-section-pdf">
+            <h2>Education</h2>
+            <div class="resume-item-pdf">
+                <div class="item-title-pdf">BE Electronics and Communication Engineering</div>
+                <div class="item-sub-pdf">Sethu Institute of Technology (2025) &mdash; <strong>CGPA: 7.3</strong></div>
+            </div>
+            <div class="resume-item-pdf">
+                <div class="item-title-pdf">Higher Secondary Certificate (HSC)</div>
+                <div class="item-sub-pdf">Muthalamman Hindu Higher Secondary School (2021) &mdash; <strong>Percentage: 80%</strong></div>
+            </div>
+            <div class="resume-item-pdf">
+                <div class="item-title-pdf">Secondary School Leaving Certificate (SSLC)</div>
+                <div class="item-sub-pdf">Muthalamman Hindu Higher Secondary School (2019) &mdash; <strong>Percentage: 80%</strong></div>
+            </div>
+        </div>
+
+        <div class="resume-section-pdf">
+            <h2>Technical Skills</h2>
+            <p><strong>Programming:</strong> C, Python, Java (Basics)</p>
+            <p><strong>Web Technologies:</strong> HTML, CSS, JavaScript, React.js, MongoDB, MySQL</p>
+            <p><strong>Tools & Platforms:</strong> Git, GitHub, VS Code</p>
+        </div>
+
+        <div class="resume-section-pdf">
+            <h2>Projects</h2>
+            <p><strong>Personal Portfolio Website</strong> – Developed a responsive portfolio website using HTML, CSS and JavaScript. Designed a modern UI to showcase projects and technical skills.</p>
+            <p><strong>Student Management System</strong> – Built a system to manage student records with add, update and delete functionality.</p>
+        </div>
+
+        <div class="resume-section-pdf">
+            <h2>Internship Experience</h2>
+            <p><strong>Web Development Intern (Feb 2024 – Mar 2024)</strong> &mdash; <em>Corizo Corporation</em></p>
+            <p>Worked on web development tasks using HTML, CSS and JavaScript; built responsive web pages and improved overall user interface aesthetics.</p>
+        </div>
+
+        <div class="resume-section-pdf">
+            <h2>Certifications</h2>
+            <ul>
+                <li>Web Development Certification – Corizo Corporation (2024)</li>
+                <li>NPTEL – Introduction to Industrial IoT 4.0</li>
+            </ul>
+        </div>
+
+        <div class="resume-section-pdf">
+            <h2>Languages</h2>
+            <p>English, Tamil</p>
+        </div>
+    </div>
+
+    <!-- Project Detail Modals (rendered from the admin panel content) -->
+    <div id="project-modals">
+
+    <!-- Project Modal 1: Portfolio -->
+    <div id="modal-portfolio" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h2>Personal Portfolio Website</h2>
+            <div class="modal-tags">
+                <span class="tag">HTML5</span>
+                <span class="tag">CSS3</span>
+                <span class="tag">JavaScript</span>
+            </div>
+            <p class="modal-body-text">
+                Designed and developed a highly responsive personal portfolio website to demonstrate technical skills, experience, and projects.
+            </p>
+            <ul class="modal-bullets">
+                <li><i class="fa-solid fa-check text-success"></i> Includes Light and Dark mode theme toggling.</li>
+                <li><i class="fa-solid fa-check text-success"></i> Smooth scroll animations powered by IntersectionObserver.</li>
+                <li><i class="fa-solid fa-check text-success"></i> Direct 1-click printable PDF resume generator.</li>
+                <li><i class="fa-solid fa-check text-success"></i> Clean modern white layout with fluid mobile responsive design.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Project Modal 2: Student Management System -->
+    <div id="modal-sms" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h2>Student Management System</h2>
+            <div class="modal-tags">
+                <span class="tag">React.js / JS</span>
+                <span class="tag">Database</span>
+                <span class="tag">CRUD</span>
+            </div>
+            <p class="modal-body-text">
+                A web application built to manage student academic records, attendance, and details seamlessly.
+            </p>
+            <ul class="modal-bullets">
+                <li><i class="fa-solid fa-check text-success"></i> Add new student profiles with validation.</li>
+                <li><i class="fa-solid fa-check text-success"></i> Real-time record update and edit capabilities.</li>
+                <li><i class="fa-solid fa-check text-success"></i> Instant delete confirmation and search filter.</li>
+                <li><i class="fa-solid fa-check text-success"></i> Clean tabular data display for institutional administration.</li>
+            </ul>
+        </div>
+    </div>
+
+    </div><!-- /#project-modals -->
+
+    <!-- Backend content loader (renders this same UI from /api/content) -->
+    <script src="content.js"></script>
+
+    <!-- Custom Script -->
+    <script src="script.js"></script>
+</body>
+</html>
