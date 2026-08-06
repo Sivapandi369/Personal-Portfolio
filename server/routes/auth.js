@@ -33,8 +33,8 @@ router.post('/login', loginLimiter, async (req, res) => {
     }
 
     admin.lastLogin = new Date().toISOString();
-    db.save();
-    db.logActivity('login', `Signed in as ${admin.username}`);
+    await db.save();
+    await db.logActivity('login', `Signed in as ${admin.username}`);
 
     res.json({
         ok: true,
@@ -80,8 +80,8 @@ router.put('/account', requireAuth, async (req, res) => {
         admin.passwordHash = await bcrypt.hash(newPassword, 10);
         admin.mustChangePassword = false;
     }
-    db.save();
-    db.logActivity('account', 'Account details updated');
+    await db.save();
+    await db.logActivity('account', 'Account details updated');
 
     res.json({
         ok: true,

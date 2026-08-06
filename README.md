@@ -69,9 +69,17 @@ sivapandi_portfolio/
 ├── package.json
 ├── .env                     # your config (git-ignored) — created from .env.example
 ├── .env.example
+├── vercel.json              # Vercel routing (all requests -> api/index.js)
+├── api/index.js             # Vercel serverless entry (exports the Express app)
 ├── server/
-│   ├── server.js            # Express app: API + static hosting
-│   ├── db.js                # JSON document store with atomic writes
+│   ├── app.js               # Express app: API + static hosting
+│   ├── server.js            # local/long-running entry (listens on PORT)
+│   ├── db.js                # single JSON document over a pluggable store
+│   ├── paths.js             # DATA_DIR / UPLOAD_DIR resolution
+│   ├── store/
+│   │   ├── index.js         # picks the backend from the environment
+│   │   ├── fsStore.js       # filesystem (local, Render, VPS)
+│   │   └── blobStore.js     # Vercel Blob (serverless)
 │   ├── defaults.js          # the original portfolio content (seed + "reset")
 │   ├── reset.js             # npm run reset-db
 │   ├── middleware/auth.js   # JWT guard
@@ -105,7 +113,7 @@ sivapandi_portfolio/
 
 | Method | Endpoint                  | Purpose                                    |
 | ------ | ------------------------- | ------------------------------------------ |
-| GET    | `/api/health`             | Service check                              |
+| GET    | `/api/health`             | Service check + which storage backend is active |
 | GET    | `/api/content`            | All content used to render the site        |
 | GET    | `/api/content/:section`   | One section                                |
 | POST   | `/api/messages`           | Submit the contact form (rate-limited)     |
@@ -184,6 +192,42 @@ Leave the SMTP block empty to keep messages in the admin inbox only.
 
 **Icons** — any [Font Awesome 6 free](https://fontawesome.com/search?o=r&m=free) class, e.g.
 `fa-solid fa-rocket`, `fa-brands fa-react`. Each icon field shows a live preview.
+
+---
+
+## Deploying to Vercel
+
+Vercel's filesystem is **read-only** (only `/tmp`, which is per-instance and ephemeral), so the app
+cannot keep its database or uploads on disk there. It therefore ships with a pluggable storage
+layer — [`server/store/`](server/store/) — that switches to **Vercel Blob** automatically.
+
+### Steps
+
+1. **Import the repo** — [vercel.com/new](https://vercel.com/new) → pick `Sivapandi369/portfolio`.
+   No build settings to change; [`vercel.json`](vercel.json) routes every request to
+   [`api/index.js`](api/index.js), which is the same Express app used locally.
+2. **Create a Blob store** — project → **Storage** → **Create** → **Blob** → connect it.
+   Vercel injects `BLOB_READ_WRITE_TOKEN`, which is what flips the app to Blob storage.
+   **Skip this and the site still renders, but no admin edit can be saved.**
+3. **Add environment variables** — project → Settings → Environment Variables:
+
+   | Variable | Value |
+   | --- | --- |
+   | `JWT_SECRET` | a long random string |
+   | `ADMIN_PASSWORD` | your admin password |
+   | `ADMIN_USERNAME` | `admin` (optional) |
+   | `ADMIN_EMAIL` | your email (optional) |
+
+4. **Redeploy** so the new variables take effect. Then open `/admin` and sign in.
+
+`GET /api/health` reports which backend is live: `{"store":"vercel-blob"}` means persistence is on;
+`"filesystem"` on Vercel means step 2 was missed and edits will not survive.
+
+### Trade-offs vs a normal server
+
+- Cold starts add ~1s to the first request after idling.
+- The `.zip` source download reads files bundled into the function (`includeFiles` in `vercel.json`).
+- Every write is awaited before responding, so nothing is lost when the function freezes.
 
 ---
 

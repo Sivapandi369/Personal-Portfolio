@@ -9,7 +9,7 @@ const router = express.Router();
 const today = () => new Date().toISOString().slice(0, 10);
 
 /* POST /api/track  { type: 'view' | 'resume' | 'zip' } */
-router.post('/track', (req, res) => {
+router.post('/track', async (req, res) => {
     const type = (req.body && req.body.type) || 'view';
     const state = db.get();
 
@@ -26,7 +26,7 @@ router.post('/track', (req, res) => {
             keys.slice(0, keys.length - 60).forEach((k) => delete state.stats.daily[k]);
         }
     }
-    db.save();
+    await db.save();
     res.json({ ok: true });
 });
 

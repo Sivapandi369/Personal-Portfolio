@@ -78,8 +78,8 @@ router.post('/messages', contactLimiter, async (req, res) => {
     };
     state.messages.unshift(entry);
     state.messages = state.messages.slice(0, 2000);
-    db.save();
-    db.logActivity('message', `New message from ${name}`);
+    await db.save();
+    await db.logActivity('message', `New message from ${name}`);
 
     forwardByEmail(entry); // fire and forget
 
@@ -116,34 +116,34 @@ router.get('/admin/messages', requireAuth, (req, res) => {
 });
 
 /* PATCH /api/admin/messages/:id  { read?, starred? } */
-router.patch('/admin/messages/:id', requireAuth, (req, res) => {
+router.patch('/admin/messages/:id', requireAuth, async (req, res) => {
     const msg = db.get().messages.find((m) => m.id === req.params.id);
     if (!msg) return res.status(404).json({ ok: false, error: 'Message not found.' });
 
     if (typeof req.body?.read === 'boolean') msg.read = req.body.read;
     if (typeof req.body?.starred === 'boolean') msg.starred = req.body.starred;
-    db.save();
+    await db.save();
     res.json({ ok: true, message: msg });
 });
 
 /* POST /api/admin/messages/read-all */
-router.post('/admin/messages/read-all', requireAuth, (req, res) => {
+router.post('/admin/messages/read-all', requireAuth, async (req, res) => {
     const state = db.get();
     state.messages.forEach((m) => (m.read = true));
-    db.save();
+    await db.save();
     res.json({ ok: true, message: 'All messages marked as read.' });
 });
 
 /* DELETE /api/admin/messages/:id */
-router.delete('/admin/messages/:id', requireAuth, (req, res) => {
+router.delete('/admin/messages/:id', requireAuth, async (req, res) => {
     const state = db.get();
     const before = state.messages.length;
     state.messages = state.messages.filter((m) => m.id !== req.params.id);
     if (state.messages.length === before) {
         return res.status(404).json({ ok: false, error: 'Message not found.' });
     }
-    db.save();
-    db.logActivity('message', 'Message deleted');
+    await db.save();
+    await db.logActivity('message', 'Message deleted');
     res.json({ ok: true, message: 'Message deleted.' });
 });
 

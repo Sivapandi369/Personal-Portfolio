@@ -1,20 +1,21 @@
 /* ----------------------------------------------------------------
-   DB  —  zero-dependency JSON document store
-   Single file (data/db.json) with atomic writes + debounced flush.
-   Keeps the whole site content, messages, stats and admin account.
+   DB  —  single JSON document over a pluggable store
+   Filesystem locally, Vercel Blob on serverless (see ./store).
+
+   The document is loaded into memory once per process (once per warm
+   serverless instance) so route handlers can read it synchronously
+   via get(). Writes go through save(), which must be awaited.
    ---------------------------------------------------------------- */
 
-const fs = require('fs');
 const bcrypt = require('bcryptjs');
 const { defaultContent } = require('./defaults');
-const { DATA_DIR, DB_FILE } = require('./paths');
-
-const TMP_FILE = DB_FILE + '.tmp';
+const { DB_FILE } = require('./paths');
+const store = require('./store');
 
 let state = null;
-let flushTimer = null;
-let writing = false;
-let dirtyAgain = false;
+let loading = null;
+let writing = null;
+let pending = false;
 
 function emptyState() {
     return {
@@ -28,133 +29,140 @@ function emptyState() {
     };
 }
 
-function load() {
-    if (state) return state;
-    if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
-
-    if (fs.existsSync(DB_FILE)) {
-        try {
-            state = JSON.parse(fs.readFileSync(DB_FILE, 'utf8'));
-        } catch (err) {
-            const backup = DB_FILE + '.corrupt-' + Date.now();
-            fs.copyFileSync(DB_FILE, backup);
-            console.error(`[db] db.json unreadable, backed up to ${backup} and re-seeded.`);
-            state = emptyState();
-        }
-    } else {
-        state = emptyState();
-    }
-
-    // ---- migrations / self-healing -------------------------------
+/* Fill in anything a newer version of the app expects. */
+function migrate(doc) {
     const blank = emptyState();
     for (const key of Object.keys(blank)) {
-        if (state[key] === undefined) state[key] = blank[key];
+        if (doc[key] === undefined) doc[key] = blank[key];
     }
-    // Fill in any content section added by a newer version of the app.
     const defs = defaultContent();
-    state.content = state.content || {};
+    doc.content = doc.content || {};
     for (const key of Object.keys(defs)) {
-        if (state.content[key] === undefined) state.content[key] = defs[key];
+        if (doc.content[key] === undefined) doc.content[key] = defs[key];
     }
+    return doc;
+}
 
-    // ---- first-run admin account --------------------------------
-    if (!state.admin) {
-        const username = process.env.ADMIN_USERNAME || 'admin';
-        /* The default below is documented publicly, so it is only acceptable for
-           local development. In production without an explicit ADMIN_PASSWORD we
-           generate a random one and print it once — never a guessable default on
-           a publicly reachable deployment. */
-        const generated =
-            !process.env.ADMIN_PASSWORD && process.env.NODE_ENV === 'production'
-                ? require('crypto').randomBytes(12).toString('base64url')
-                : null;
-        const password = process.env.ADMIN_PASSWORD || generated || 'Admin@123';
-        state.admin = {
-            username,
-            passwordHash: bcrypt.hashSync(password, 10),
-            email: process.env.ADMIN_EMAIL || 'sivapandi622004@gmail.com',
-            mustChangePassword: true,
-            createdAt: new Date().toISOString(),
-            lastLogin: null
-        };
-        console.log('----------------------------------------------------');
-        console.log(' First run: admin account created');
-        console.log(`   username : ${username}`);
-        console.log(`   password : ${password}`);
-        if (generated) {
-            console.log('');
-            console.log(' ADMIN_PASSWORD was not set, so this password was');
-            console.log(' generated randomly. Copy it now — it is shown only');
-            console.log(' once. Then change it in Admin Panel → Account.');
-        } else {
-            console.log(' Change it from Admin Panel → Account.');
-        }
-        console.log('----------------------------------------------------');
-        persistNow();
+function seedAdmin(doc) {
+    if (doc.admin) return false;
+
+    const username = process.env.ADMIN_USERNAME || 'admin';
+    /* The default below is documented publicly, so it is only acceptable for
+       local development. In production without an explicit ADMIN_PASSWORD we
+       generate a random one and print it once — never a guessable default on
+       a publicly reachable deployment. */
+    const generated =
+        !process.env.ADMIN_PASSWORD && process.env.NODE_ENV === 'production'
+            ? require('crypto').randomBytes(12).toString('base64url')
+            : null;
+    const password = process.env.ADMIN_PASSWORD || generated || 'Admin@123';
+
+    doc.admin = {
+        username,
+        passwordHash: bcrypt.hashSync(password, 10),
+        email: process.env.ADMIN_EMAIL || 'sivapandi622004@gmail.com',
+        mustChangePassword: true,
+        createdAt: new Date().toISOString(),
+        lastLogin: null
+    };
+
+    console.log('----------------------------------------------------');
+    console.log(' First run: admin account created');
+    console.log(`   username : ${username}`);
+    console.log(`   password : ${password}`);
+    if (generated) {
+        console.log('');
+        console.log(' ADMIN_PASSWORD was not set, so this password was');
+        console.log(' generated randomly. Copy it now — it is shown only');
+        console.log(' once. Then change it in Admin Panel → Account.');
+    } else {
+        console.log(' Change it from Admin Panel → Account.');
     }
+    console.log('----------------------------------------------------');
+    return true;
+}
 
+/* Load the document into memory. Safe to call repeatedly; concurrent
+   callers share one in-flight load. */
+function ready() {
+    if (state) return Promise.resolve(state);
+    if (loading) return loading;
+
+    loading = (async () => {
+        const doc = await store.readDoc();
+        state = migrate(doc || emptyState());
+        const seeded = seedAdmin(state);
+        if (!doc || seeded) await persist();
+        return state;
+    })().finally(() => {
+        loading = null;
+    });
+
+    return loading;
+}
+
+/* Synchronous accessor — valid only after ready() has resolved.
+   The dbReady middleware guarantees that for every request. */
+function get() {
+    if (!state) {
+        throw new Error('Database not loaded yet — await db.ready() first.');
+    }
     return state;
 }
 
-function get() {
-    return load();
-}
-
-/* Mark the store dirty; the file is written at most once every 150ms. */
-function save() {
-    load();
-    state.meta.updatedAt = new Date().toISOString();
-    if (flushTimer) return;
-    flushTimer = setTimeout(() => {
-        flushTimer = null;
-        persistNow();
-    }, 150);
-}
-
-function persistNow() {
+async function persist() {
     if (!state) return;
     if (writing) {
-        dirtyAgain = true;
-        return;
+        // coalesce: one more write after the current one finishes
+        pending = true;
+        return writing;
     }
-    writing = true;
-    try {
-        if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
-        fs.writeFileSync(TMP_FILE, JSON.stringify(state, null, 2), 'utf8');
-        fs.renameSync(TMP_FILE, DB_FILE); // atomic on the same volume
-    } catch (err) {
-        console.error('[db] write failed:', err.message);
-    } finally {
-        writing = false;
-        if (dirtyAgain) {
-            dirtyAgain = false;
-            persistNow();
+    writing = (async () => {
+        try {
+            await store.writeDoc(state);
+        } catch (err) {
+            console.error('[db] write failed:', err.message);
         }
-    }
+    })().finally(async () => {
+        writing = null;
+        if (pending) {
+            pending = false;
+            await persist();
+        }
+    });
+    return writing;
 }
 
-/* Flush pending writes synchronously (used on process exit). */
+/* Mark updated + persist. Await this in route handlers so serverless
+   functions are not frozen mid-write. */
+function save() {
+    if (!state) return Promise.resolve();
+    state.meta.updatedAt = new Date().toISOString();
+    return persist();
+}
+
+/* Best-effort synchronous flush for process exit (filesystem only). */
 function flush() {
-    if (flushTimer) {
-        clearTimeout(flushTimer);
-        flushTimer = null;
+    if (!state) return;
+    try {
+        if (typeof store.writeDocSync === 'function') store.writeDocSync(state);
+    } catch (err) {
+        console.error('[db] flush failed:', err.message);
     }
-    persistNow();
 }
 
-function resetContent() {
-    load();
-    state.content = defaultContent();
-    save();
+async function resetContent() {
+    get().content = defaultContent();
+    await save();
     return state.content;
 }
 
 /* Small audit trail shown on the admin dashboard. */
 function logActivity(action, detail) {
-    load();
+    if (!state) return Promise.resolve();
     state.activity.unshift({ action, detail: detail || '', at: new Date().toISOString() });
     state.activity = state.activity.slice(0, 50);
-    save();
+    return save();
 }
 
-module.exports = { get, save, flush, resetContent, logActivity, DB_FILE };
+module.exports = { ready, get, save, flush, resetContent, logActivity, DB_FILE, store };
