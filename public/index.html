@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sivapandi R | Software Developer & Web Developer Portfolio</title>
     <meta name="description" content="Portfolio of Sivapandi R - Software Developer, Web Development Intern, and ECE Graduate proficient in React.js, JavaScript, Python, HTML/CSS, MongoDB, and MySQL.">
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -53,6 +53,10 @@
                     <i class="fa-solid fa-file-arrow-down"></i>
                     <span>Resume PDF</span>
                 </button>
+                <a href="admin/" class="btn btn-primary btn-sm btn-admin-login" title="Admin Login">
+                    <i class="fa-solid fa-lock"></i>
+                    <span>Admin Login</span>
+                </a>
                 <button class="mobile-toggle" id="mobile-toggle" aria-label="Toggle Navigation Menu">
                     <i class="fa-solid fa-bars icon-bars"></i>
                     <i class="fa-solid fa-xmark icon-close"></i>
@@ -85,9 +89,9 @@
                         <a href="#contact" class="btn btn-outline">
                             <i class="fa-solid fa-paper-plane"></i> Contact Me
                         </a>
-                        <button class="btn btn-secondary btn-download-zip" id="download-zip-btn">
-                            <i class="fa-solid fa-file-zipper"></i> Source Code (.ZIP)
-                        </button>
+                        <a href="https://github.com/Sivapandi369/Personal-Portfolio" class="btn btn-secondary" target="_blank" rel="noopener">
+                            <i class="fa-brands fa-github"></i> Source Code
+                        </a>
                     </div>
 
                     <div class="hero-contact-strip" id="hero-contact-strip">
@@ -663,7 +667,7 @@
 
     </div><!-- /#project-modals -->
 
-    <!-- Backend content loader (renders this same UI from /api/content) -->
+    <!-- Content loader: renders this same UI from content.json -->
     <script src="content.js"></script>
 
     <!-- Custom Script -->

@@ -1,15 +1,7 @@
 node_modules/
-data/
-public/uploads/*
-!public/uploads/.gitkeep
 *.log
 npm-debug.log*
 .DS_Store
 Thumbs.db
-
-# Vercel CLI
-.vercel
-
-# Local secrets — but keep the documented template
-.env*
-!.env.example
+.vscode/
+.idea/

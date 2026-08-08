@@ -182,6 +182,11 @@ h1, h2, h3, h4, h5, h6 {
     width: 100%;
 }
 
+/* Anchor buttons inherit the body line-height, so pin it to match <button> boxes */
+.btn-admin-login {
+    line-height: normal;
+}
+
 /* Navbar */
 .navbar {
     position: fixed;
@@ -1264,6 +1269,10 @@ h1, h2, h3, h4, h5, h6 {
     .mobile-toggle {
         display: block;
     }
+
+    /* Icon-only admin login so the navbar stays tidy on small screens */
+    .btn-admin-login span { display: none; }
+    .btn-admin-login { padding: 0.5rem 0.7rem; }
 
     .timeline::before { left: 10px; }
     .timeline-item { padding-left: 35px; }

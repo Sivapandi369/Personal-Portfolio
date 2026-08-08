@@ -1,13 +1,12 @@
 /* ----------------------------------------------------
    SIVAPANDI R - PORTFOLIO INTERACTIVE SCRIPT
-   Theme Switcher, Scroll Animations, PDF & ZIP Download
+   Theme switcher, scroll animations, resume PDF, contact form.
+   Fully static — no backend calls.
    ---------------------------------------------------- */
 
-const API_BASE = (window.PORTFOLIO_API_BASE || '').replace(/\/$/, '');
-
 document.addEventListener('DOMContentLoaded', async () => {
-    // Wait for content.js to render the admin-managed content first, so every
-    // listener below binds to the final DOM. Resolves to null when offline.
+    // Wait for content.js to render the content.json-driven markup first, so
+    // every listener below binds to the final DOM.
     if (window.portfolioContentReady) {
         await window.portfolioContentReady.catch(() => null);
     }
@@ -19,7 +18,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     initModals();
     initCopyButtons();
     initResumePdfDownload();
-    initZipDownload();
     setDynamicYear();
 });
 
@@ -202,7 +200,7 @@ function initCopyButtons() {
 
 /* 7. Download PDF Resume Functionality
       Two modes, controlled from the Admin Panel → Resume:
-        'file'     -> stream the PDF uploaded by the admin
+        'file'     -> download the PDF committed next to the site
         'generate' -> build the PDF in-browser from #printable-resume        */
 function initResumePdfDownload() {
     const buttons = [
@@ -213,10 +211,10 @@ function initResumePdfDownload() {
 
     const resumeConfig = () => (window.portfolioContent && window.portfolioContent.resume) || {};
 
-    const downloadUploadedFile = () => {
+    const downloadStaticFile = () => {
         const cfg = resumeConfig();
         const a = document.createElement('a');
-        a.href = `${API_BASE}/api/resume`;
+        a.href = cfg.file;
         a.download = cfg.fileName || 'Resume.pdf';
         document.body.appendChild(a);
         a.click();
@@ -244,7 +242,6 @@ function initResumePdfDownload() {
         html2pdf().set(opt).from(printableElement).save().then(() => {
             printableElement.style.display = 'none';
             showToast('Resume PDF downloaded successfully!');
-            trackEvent('resume');
         }).catch(() => {
             printableElement.style.display = 'none';
             window.print();
@@ -255,8 +252,8 @@ function initResumePdfDownload() {
         btn.addEventListener('click', () => {
             showToast('Preparing Sivapandi R Resume PDF...');
             const cfg = resumeConfig();
-            if (cfg.mode === 'file' && cfg.uploadedFile) {
-                downloadUploadedFile();
+            if (cfg.mode === 'file' && cfg.file) {
+                downloadStaticFile();
             } else {
                 generatePdf();
             }
@@ -264,28 +261,22 @@ function initResumePdfDownload() {
     });
 }
 
-/* 8. Download ZIP Source Code Button */
-function initZipDownload() {
-    const zipBtn = document.getElementById('download-zip-btn');
-    if (!zipBtn) return;
-    zipBtn.addEventListener('click', () => {
-        const a = document.createElement('a');
-        a.href = `${API_BASE}/api/download/source`;
-        a.download = 'sivapandi_portfolio.zip';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        showToast('Downloading Sivapandi Portfolio ZIP Archive...');
-    });
-}
-
-/* 9. Contact Form — posts to the backend inbox (Admin Panel → Messages) */
+/* 8. Contact Form
+      A static site has no inbox of its own, so the form has two modes,
+      both configured in Admin Panel → Contact → Enquiry Form:
+        endpoint -> POST the message to a form service (Formspree, Getform…)
+        mailto   -> open the visitor's mail app with the message pre-filled  */
 async function handleFormSubmit(e) {
     e.preventDefault();
 
     const form = document.getElementById('contact-form');
     const submitBtn = form.querySelector('button[type="submit"]');
     const originalBtn = submitBtn ? submitBtn.innerHTML : '';
+    const cfg =
+        (window.portfolioContent &&
+            window.portfolioContent.contact &&
+            window.portfolioContent.contact.form) ||
+        {};
 
     const payload = {
         name: document.getElementById('name').value.trim(),
@@ -294,34 +285,34 @@ async function handleFormSubmit(e) {
         message: document.getElementById('message').value.trim()
     };
 
+    const success = () => {
+        const template = cfg.successMessage || 'Thank you, {name}! Your message has been sent.';
+        showToast(template.replace('{name}', payload.name));
+        form.reset();
+    };
+
+    if (!cfg.endpoint) {
+        openMailClient(cfg.mailto, payload);
+        success();
+        return;
+    }
+
     if (submitBtn) {
         submitBtn.disabled = true;
         submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending...';
     }
 
     try {
-        const res = await fetch(`${API_BASE}/api/messages`, {
+        const res = await fetch(cfg.endpoint, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
             body: JSON.stringify(payload)
         });
-        const data = await res.json().catch(() => ({}));
-
-        if (!res.ok || !data.ok) {
-            throw new Error(data.error || 'Message could not be sent.');
-        }
-
-        const template =
-            (window.portfolioContent &&
-                window.portfolioContent.contact &&
-                window.portfolioContent.contact.form &&
-                window.portfolioContent.contact.form.successMessage) ||
-            'Thank you, {name}! Your message has been sent successfully.';
-
-        showToast(template.replace('{name}', payload.name));
-        form.reset();
+        if (!res.ok) throw new Error('Message could not be sent.');
+        success();
     } catch (err) {
-        showToast(err.message || 'Something went wrong. Please email me directly.');
+        showToast('Sending failed — opening your mail app instead.');
+        openMailClient(cfg.mailto, payload);
     } finally {
         if (submitBtn) {
             submitBtn.disabled = false;
@@ -330,17 +321,18 @@ async function handleFormSubmit(e) {
     }
 }
 
-/* 9b. Lightweight event counter for the admin dashboard */
-function trackEvent(type) {
-    fetch(`${API_BASE}/api/track`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type }),
-        keepalive: true
-    }).catch(() => {});
+function openMailClient(to, payload) {
+    if (!to) {
+        showToast('No contact address is configured yet.');
+        return;
+    }
+    const body = `Name: ${payload.name}\nEmail: ${payload.email}\n\n${payload.message}`;
+    window.location.href =
+        `mailto:${to}?subject=${encodeURIComponent(payload.subject || 'Portfolio enquiry')}` +
+        `&body=${encodeURIComponent(body)}`;
 }
 
-/* 10. Toast Notification Utility */
+/* 9. Toast Notification Utility */
 function showToast(message) {
     const toast = document.getElementById('toast');
     if (!toast) return;
@@ -351,7 +343,7 @@ function showToast(message) {
     }, 3000);
 }
 
-/* 11. Dynamic Year Footer */
+/* 10. Dynamic Year Footer */
 function setDynamicYear() {
     const yearEl = document.getElementById('year');
     if (yearEl) {

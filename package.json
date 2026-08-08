@@ -1,36 +1,17 @@
 {
   "name": "sivapandi-portfolio",
-  "version": "2.0.0",
-  "description": "Sivapandi R portfolio website with Node/Express backend and admin panel (CMS)",
-  "main": "server/server.js",
-  "type": "commonjs",
+  "version": "3.0.0",
+  "description": "Static portfolio website for Sivapandi R, with a browser-based content editor",
+  "private": true,
   "scripts": {
-    "start": "node server/server.js",
-    "dev": "node --watch server/server.js",
-    "reset-db": "node server/reset.js"
+    "dev": "npx --yes serve public --listen 3000",
+    "start": "npm run dev"
   },
   "keywords": [
     "portfolio",
-    "express",
-    "admin-panel",
-    "cms"
+    "static-site",
+    "vanilla-js"
   ],
   "author": "Sivapandi R",
-  "license": "MIT",
-  "dependencies": {
-    "@vercel/blob": "^2.6.1",
-    "archiver": "^7.0.1",
-    "bcryptjs": "^2.4.3",
-    "compression": "^1.7.5",
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.7",
-    "express": "^4.21.2",
-    "express-rate-limit": "^7.5.0",
-    "jsonwebtoken": "^9.0.2",
-    "multer": "^2.2.0",
-    "nodemailer": "^9.0.4"
-  },
-  "engines": {
-    "node": ">=18 <25"
-  }
+  "license": "MIT"
 }

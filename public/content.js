@@ -1,16 +1,15 @@
 /* ----------------------------------------------------------------
    SIVAPANDI R — CONTENT HYDRATION LAYER
-   Pulls the portfolio content from the backend (/api/content) and
-   re-renders the existing markup with it — same classes, same
-   structure, same look. If the API is unreachable the hard-coded
-   HTML already in the page is kept as-is, so the site never breaks.
+   Reads the portfolio content from content.json and re-renders the
+   existing markup with it — same classes, same structure, same look.
+   If the file cannot be loaded, the hard-coded HTML already in the
+   page is kept as-is, so the site never breaks.
    ---------------------------------------------------------------- */
 
 (function () {
     'use strict';
 
-    const API = (window.PORTFOLIO_API_BASE || '').replace(/\/$/, '');
-    const url = (p) => API + p;
+    const CONTENT_URL = 'content.json';
 
     /* ---------------- helpers ---------------- */
 
@@ -559,45 +558,39 @@
         applyVisibility(content);
     }
 
-    /* ---------------- analytics ---------------- */
+    /* ---------------- boot ----------------
+       Normally the content comes from content.json. The admin panel opens
+       this page as ?preview=1 inside an iframe, which makes it read the
+       working copy the editor keeps in localStorage instead — that is how
+       unsaved edits show up in the live preview. */
 
-    function trackVisit() {
-        try {
-            if (sessionStorage.getItem('sp-visit-tracked')) return;
-            sessionStorage.setItem('sp-visit-tracked', '1');
-        } catch (e) {
-            /* private mode — track anyway */
+    function loadContent() {
+        if (/[?&]preview=1\b/.test(window.location.search)) {
+            try {
+                const draft = JSON.parse(localStorage.getItem('sp-portfolio-content') || 'null');
+                if (draft) return Promise.resolve(draft);
+            } catch (e) {
+                /* corrupt draft — fall through to content.json */
+            }
         }
-        fetch(url('/api/track'), {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ type: 'view' }),
-            keepalive: true
-        }).catch(() => {});
+        return fetch(CONTENT_URL, { headers: { Accept: 'application/json' } }).then((r) => {
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            return r.json();
+        });
     }
-
-    /* ---------------- boot ---------------- */
 
     window.portfolioContent = null;
 
-    window.portfolioContentReady = fetch(url('/api/content'), { headers: { Accept: 'application/json' } })
-        .then((r) => {
-            if (!r.ok) throw new Error('HTTP ' + r.status);
-            return r.json();
-        })
-        .then((payload) => {
-            if (!payload || !payload.ok || !payload.content) throw new Error('Malformed API response');
-            window.portfolioContent = payload.content;
-            hydrate(payload.content);
-            window.PORTFOLIO_DEFAULT_THEME = (payload.content.site || {}).defaultTheme || 'light';
-            trackVisit();
-            return payload.content;
+    window.portfolioContentReady = loadContent()
+        .then((content) => {
+            if (!content || typeof content !== 'object') throw new Error('Malformed content.json');
+            window.portfolioContent = content;
+            hydrate(content);
+            window.PORTFOLIO_DEFAULT_THEME = (content.site || {}).defaultTheme || 'light';
+            return content;
         })
         .catch((err) => {
-            console.warn(
-                '[portfolio] Backend unavailable — showing the built-in static content.',
-                err.message
-            );
+            console.warn('[portfolio] content.json unavailable — showing the built-in markup.', err.message);
             return null;
         });
 })();
