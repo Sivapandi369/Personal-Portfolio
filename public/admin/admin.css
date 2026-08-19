@@ -609,7 +609,16 @@ label.switch, .switch { display: flex; align-items: center; gap: 10px; cursor: p
     width: 100%;
     box-sizing: border-box;
     -webkit-text-fill-color: var(--text-primary);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-body);
+    color: var(--text-primary);
+    transition: var(--transition);
 }
+.login-card input[type="text"]:-webkit-autofill,
+.login-card input[type="text"]:-webkit-autofill:hover,
+.login-card input[type="text"]:-webkit-autofill:focus,
 .login-card input[type="password"]:-webkit-autofill,
 .login-card input[type="password"]:-webkit-autofill:hover,
 .login-card input[type="password"]:-webkit-autofill:focus {
@@ -617,6 +626,17 @@ label.switch, .switch { display: flex; align-items: center; gap: 10px; cursor: p
     -webkit-box-shadow: 0 0 0 1000px var(--bg-secondary) inset;
     box-shadow: 0 0 0 1000px var(--bg-secondary) inset;
     transition: background-color 5000s ease-in-out 0s;
+}
+.login-card input[type="text"]:focus,
+.login-card input[type="password"]:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.login-card input[type="text"]::placeholder,
+.login-card input[type="password"]::placeholder {
+    color: var(--text-muted);
+    opacity: 0.75;
 }
 
 .login-error {
