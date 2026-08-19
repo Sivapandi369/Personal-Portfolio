@@ -12,6 +12,9 @@ import { SCHEMAS, SECTION_KEYS } from './schemas.js';
 import * as store from './store.js';
 
 const THEME_KEY = 'sp-admin-theme';
+const AUTH_KEY = 'sp-admin-auth';
+const ADMIN_USERNAME = 'admin123';
+const ADMIN_PASSWORD = 'admin@123';
 const PUBLISH_VIEW = 'publish';
 const HELP_VIEW = 'help';
 
@@ -304,6 +307,57 @@ function reloadPreview() {
     if (frame && !pane.hidden) frame.src = '../index.html?preview=1&t=' + Date.now();
 }
 
+/* ==================== authentication ==================== */
+
+function isAuthenticated() {
+    return sessionStorage.getItem(AUTH_KEY) === 'true';
+}
+
+function showLogin() {
+    $('#login-screen').hidden = false;
+    $('#admin-app').hidden = true;
+    document.body.classList.add('login-mode');
+}
+
+function showAdmin() {
+    $('#login-screen').hidden = true;
+    $('#admin-app').hidden = false;
+    document.body.classList.remove('login-mode');
+}
+
+function initAuth() {
+    const form = $('#login-form');
+    const errorBox = $('#login-error');
+    const usernameInput = $('#login-username');
+    const passwordInput = $('#login-password');
+    const loginBtn = $('#login-btn');
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const username = usernameInput.value.trim();
+        const password = passwordInput.value;
+
+        if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+            sessionStorage.setItem(AUTH_KEY, 'true');
+            errorBox.hidden = true;
+            showAdmin();
+            bootAdmin();
+        } else {
+            errorBox.hidden = false;
+            passwordInput.value = '';
+            passwordInput.focus();
+        }
+    });
+
+    $('#logout-btn').addEventListener('click', () => {
+        sessionStorage.removeItem(AUTH_KEY);
+        showLogin();
+        usernameInput.value = '';
+        passwordInput.value = '';
+        errorBox.hidden = true;
+    });
+}
+
 /* ==================== boot ==================== */
 
 function closeSidebar() {
@@ -352,8 +406,7 @@ function fatal(message) {
     );
 }
 
-(async function boot() {
-    initChrome();
+async function bootAdmin() {
     try {
         await store.init();
     } catch (err) {
@@ -365,4 +418,16 @@ function fatal(message) {
     buildSidebar();
     const initial = location.hash.slice(1);
     navigate(SCHEMAS[initial] || initial === PUBLISH_VIEW || initial === HELP_VIEW ? initial : SECTION_KEYS[0]);
+}
+
+(function boot() {
+    initChrome();
+    initAuth();
+
+    if (isAuthenticated()) {
+        showAdmin();
+        bootAdmin();
+    } else {
+        showLogin();
+    }
 })();
