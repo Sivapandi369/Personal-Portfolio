@@ -213,13 +213,9 @@ function initResumePdfDownload() {
 
     const downloadStaticFile = () => {
         const cfg = resumeConfig();
-        const a = document.createElement('a');
-        a.href = cfg.file;
-        a.download = cfg.fileName || 'Resume.pdf';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        showToast('Resume PDF downloaded successfully!');
+        // Open PDF in new tab instead of downloading
+        window.open(cfg.file, '_blank');
+        showToast('Opening Resume PDF...');
     };
 
     const generatePdf = () => {

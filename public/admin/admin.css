@@ -603,7 +603,9 @@ label.switch, .switch { display: flex; align-items: center; gap: 10px; cursor: p
 
 .login-card input[type="text"],
 .login-card input[type="password"] {
-    padding: 12px 14px;
+    padding: 14px 16px;
+    font-size: 1rem;
+    height: 52px;
 }
 
 .login-error {

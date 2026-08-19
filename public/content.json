@@ -417,9 +417,9 @@
     "subtext": "Built with HTML5, CSS3, JavaScript, and Love."
   },
   "resume": {
-    "mode": "generate",
+    "mode": "file",
     "fileName": "Resume.pdf",
-    "file": "Resume.pdf",
+    "file": "assets/Resume%20.pdf",
     "header": {
       "name": "SIVAPANDI R",
       "contact": "Theni - 625531 | Mobile: +91 9360833565 | Email: sivapandi622004@gmail.com"
